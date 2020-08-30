@@ -8,32 +8,32 @@ import { rhythm } from "../utils/typography"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata.title
-  const posts = data.allMarkdownRemark.edges
+  const posts = data.allFeedGatsbyBlog.edges
 
   return (
     <Layout location={location} title={siteTitle}>
       <SEO title="All posts" />
       <Bio />
       {posts.map(({ node }) => {
-        const title = node.frontmatter.title || node.fields.slug
+        const title = node.title || node.id
         return (
-          <article key={node.fields.slug}>
+          <article key={node.id}>
             <header>
               <h3
                 style={{
                   marginBottom: rhythm(1 / 4),
                 }}
               >
-                <Link style={{ boxShadow: `none` }} to={node.fields.slug}>
+                <Link style={{ boxShadow: `none` }} to={node.id}>
                   {title}
                 </Link>
               </h3>
-              <small>{node.frontmatter.date}</small>
+              <small>{node.pubDate}</small>
             </header>
             <section>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: node.frontmatter.description || node.excerpt,
+                  __html: node.contentSnippet || node.content,
                 }}
               />
             </section>
@@ -53,17 +53,15 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allFeedGatsbyBlog(sort: {fields: pubDate, order: DESC}) {
       edges {
         node {
-          excerpt
-          fields {
-            slug
-          }
-          frontmatter {
-            date(formatString: "MMMM DD, YYYY")
-            title
-            description
+          contentSnippet
+          id
+          pubDate
+          title
+          internal {
+            contentDigest
           }
         }
       }

@@ -7,7 +7,7 @@ import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
 
 const BlogPostTemplate = ({ data, pageContext, location }) => {
-  const post = data.markdownRemark
+  const post = data.feedGatsbyBlog
   const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
 
@@ -15,7 +15,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
     <Layout location={location} title={siteTitle}>
       <SEO
         title={post.frontmatter.title}
-        description={post.frontmatter.description || post.excerpt}
+        description={post.contentSnippet || post.internal.description}
       />
       <article>
         <header>
@@ -25,7 +25,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
               marginBottom: 0,
             }}
           >
-            {post.frontmatter.title}
+            {post.title}
           </h1>
           <p
             style={{
@@ -34,10 +34,10 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
               marginBottom: rhythm(1),
             }}
           >
-            {post.frontmatter.date}
+            {post.pubDate}
           </p>
         </header>
-        <section dangerouslySetInnerHTML={{ __html: post.html }} />
+        <section dangerouslySetInnerHTML={{ __html: post.content }} />
         <hr
           style={{
             marginBottom: rhythm(1),
@@ -60,15 +60,15 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
         >
           <li>
             {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
-              </Link>
+              <Link to={previous.id} rel="prev">
+                ← {previous.title}
+              idLink>
             )}
           </li>
           <li>
             {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
+              <Link to={next.id} rel="next">
+                {next.title} →
               </Link>
             )}
           </li>
@@ -81,19 +81,19 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlug($slug: String!) {
+  query BlogPostBySlug($id: String!) {
     site {
       siteMetadata {
         title
       }
     }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
+    feedGatsbyBlog(fields: { id: { eq: $id } }) {
       id
-      excerpt(pruneLength: 160)
-      html
-      frontmatter {
-        title
-        date(formatString: "MMMM DD, YYYY")
+      contentSnippet(pruneLength: 160)
+      content
+      title
+      pubDate
+      internal {
         description
       }
     }

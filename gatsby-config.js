@@ -27,6 +27,16 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-source-rss-feed`,
+      options: {
+        url: `https://www.heise.de/developer/rss/news-atom.xml`,
+        name: `GatsbyBlog`,
+        // Optional
+        // Read parser document: https://github.com/bobby-brennan/rss-parser#readme
+        // parserOption: {}
+      }
+    },
+    {
       resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [

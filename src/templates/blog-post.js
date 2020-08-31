@@ -14,7 +14,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       <SEO
-        title={post.frontmatter.title}
+        title={post.title}
         description={post.contentSnippet || post.internal.description}
       />
       <article>
@@ -62,7 +62,7 @@ const BlogPostTemplate = ({ data, pageContext, location }) => {
             {previous && (
               <Link to={previous.id} rel="prev">
                 ← {previous.title}
-              idLink>
+              </Link>
             )}
           </li>
           <li>
@@ -87,9 +87,9 @@ export const pageQuery = graphql`
         title
       }
     }
-    feedGatsbyBlog(fields: { id: { eq: $id } }) {
+    feedGatsbyBlog(id: { eq: $id }) {
       id
-      contentSnippet(pruneLength: 160)
+      contentSnippet
       content
       title
       pubDate
